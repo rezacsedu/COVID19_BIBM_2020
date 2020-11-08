@@ -56,14 +56,16 @@ While hospitals are struggling with scaling up capacities to meet the rising num
 The definitive test for COVID-19 is the reverse transcriptase-polymerase chain reaction~(RT-PCR) test, which has to be performed in specialized laboratories and is a labor-intensive process. COVID-19 patients, however, show several unique clinical and para-clinical features, e.g., presenting abnormalities in medical chest imaging with commonly bilateral involvement. The features were shown to be observable on chest X-ray~(CXR) and CT images~\cite{huang2020clinical}, but are only moderately characteristic to the human eye~\cite{ng2020imaging} and not easy to distinguish from pneumonia features. 
 
 AI-based techniques have been utilized in numerous scenarios, including automated diagnoses and treatment in clinical settings. Deep neural networks~(DNNs) have been employed for the diagnosis of COVID-19 from medical images, leading to promising results~\cite{huang2020clinical,wang2020covid,ng2020imaging,ozturk2020automated,tabik2020covidgr}. However, many current approaches are ``black box" methods without providing insights into the decisive image features. 
-Let's imagine a situation where resources are scarce, e.g., a hospital runs out of confirmatory tests or necessary radiologists are occupied, where AI-assisted tools could potentially help less-specialized general practitioners to triage patients, by highlighting critical chest regions to lead automated diagnosis decision~\cite{wang2020covid}. A fully automated method without the possibility for human verification would, however, at the current state-of-the-art, be potentially dangerous in a practical setting. 
+Let's imagine a situation where resources are scarce, e.g., a hospital runs out of confirmatory tests or necessary radiologists are occupied, where AI-assisted tools could potentially help less-specialized general practitioners to triage patients, by highlighting critical chest regions to lead automated diagnosis decision~\cite{wang2020covid}. 
 
-As a quick step towards an AI-based COVID-19 diagnosis, we propose \emph{`DeepCOVIDExplainer'}, a novel diagnosis approach based on neural ensemble method. The pipeline of \emph{`DeepCOVIDExplainer'} starts with histogram equalization enhancement, filtering, and unsharp masking of CXR images, followed by the training of DenseNet, ResNet, and VGGNet architectures, and creating respective model snapshots. Those are incorporated into an ensemble, using Softmax class posterior averaging~(SCPA) and prediction maximization~(PM) for the best performing models. 
-Finally, class-discriminating attention maps are generated using gradient-guided class activation maps~(Grad-CAM++) and layer-wise relevance propagation~(LRP) to provide explanations of the predictions and to identify the critical regions on patients chest. 
+A fully automated method without the possibility for human verification would, however, at the current state-of-the-art, be potentially dangerous in a practical setting. 
+Although COVID-19 diagnosis approaches~\cite{bullock2020mapping,COVID3,COVID1,COVID2,narin2020automatic,wang2020covid, ozturk2020automated,ghoshal2020estimating,tabik2020covidgr} proposed recently looks promising when compared to expert radiologist a lower sensitivity in most of the cases, the reliability can be questioned for three main reasons. The datasets used are severely biased due to a deficient number of COVID-19 cases. Moreover, some results are not statistically reliable and lack of decision biases as the diagnoses were mostly based on a single model. Nevertheless, less accurate localization and visualization of critical chest regions.
+
 %We hope that \emph{`DeepCOVIDExplainer'} will be a useful contribution towards the development and adoption of AI-assisted diagnosis applications in general, and for COVID-19 in particular. 
 %To allow for the reproduction of results and derivative works, we will make the source code, documentation, and links to used data publicly available. 
 %The rest of the paper is structured as follows: \Cref{sec:rw} outlines related works and points out potential limitations. \Cref{sec:mm} describes our proposed approach, before demonstrating experiment results in \cref{sec:er}. \Cref{sec:co} summarizes the work and provides some outlook before concluding the paper.
 
+\iffalse
 \section{Related Work}
 \label{sec:rw}
 Bullock et al.~\cite{bullock2020mapping} provides a comprehensive overview of recent application areas of AI against COVID-19, mentioning medical imaging for diagnoses first, which emphasizes the prevalence of the topic. Although PCR tests offer many advantages over CXR and CT~\cite{COVID3}, shipping the sample of patients is necessary, whereas X-ray or CT machines are readily available even in rather remote areas. In a recent study by K. Lee et al.~\cite{COVID1}, CXR and CT images from nine COVID-19 infected patients were analyzed by two radiologists to assess the correspondence of abnormal findings on X-rays with those on CT images. The proportion of patients with abnormal initial radiographic findings was 78.3\% to 82.4\% for SARS and 83.6\% for MERS, while being only 33\% for COVID-19 cases~\cite{COVID1}. 
@@ -85,7 +87,12 @@ Biraja G. et al. \cite{ghoshal2020estimating} employed uncertainty estimation an
 an accuracy of 97.37\%$±$1.86\%,88.14\%$±$2.02\%, 66.5\%$±$8.04\% in severe, moderate, and mild COVID severity levels. 
 
 Although these results look promising when compared to expert radiologist sensitivity of 69\%~\cite{tabik2020covidgr}, in most of the cases, the reliability can be questioned for three main reasons. The datasets used are severely biased due to a deficient number of COVID-19 cases~\cite{tabik2020covidgr}. Secondly, some results are not statistically reliable and lack of decision biases as the diagnoses were mostly based on a single model. Thirdly, less accurate localization and visualization of critical chest regions.
-To overcome these shortcomings, our approach first enriches existing datasets with more COVID-19 samples, followed by a comprehensive preprocessing pipeline for CXR images and data augmentation. The COVID-19 diagnosis of \emph{`DeepCOVIDExplainer'} is based on snapshot neural ensemble method with a focus on algorithmic transparency and explainability, with the following assumptions:
+\fi 
+
+To overcome these shortcomings and as a quick step towards an AI-based COVID-19 diagnosis, we propose \emph{`DeepCOVIDExplainer'}, a novel diagnosis approach based on neural ensemble method. 
+%our approach first enriches existing datasets with more COVID-19 samples, followed by a comprehensive preprocessing pipeline for CXR images and data augmentation.
+The pipeline of DeepCOVIDExplainer starts with histogram equalization enhancement, filtering, and unsharp masking of CXR images, followed by the training of DenseNet, ResNet, and VGGNet architectures, and creating respective model snapshots. Those are incorporated into an ensemble, using Softmax class posterior averaging~(SCPA) and prediction maximization~(PM) for the best performing models. Finally, class-discriminating attention maps are generated using gradient-guided class activation maps~(Grad-CAM++) and layer-wise relevance propagation~(LRP) to provide explanations of the predictions and to identify the critical regions on patients chest.
+The COVID-19 diagnosis of \emph{`DeepCOVIDExplainer'}, which is based on snapshot neural ensemble method is focused on algorithmic transparency and explainability, with the following assumptions:
 
 \vspace{1mm}
 \begin{itemize}
@@ -228,10 +235,7 @@ DenseNet-161, and DenseNet-201 architectures to concatenate additional inputs fr
 %To avoid possible overfitting, $L_2$ weight regularization, dropout, and data augmentation
 %~(by rotating CXR images by up to 15$^\circ$) 
 %were employed. 
-We do not initialize network weights with any pretrained~(e.g., ImageNet) models. ImageNet contains photos of general objects, which would activate the internal representation of the network's hidden layers with geometrical forms, colorful patterns, or irrelevant shapes that are usually not present CXR images. 
-We set the number of epochs~(NE), maximum learning rate~(LR), number of cycles, and current epoch number, where initial LR and NE are two hyperparameters. CAC starts with a large LR and rapidly decreases to a minimum value before it dramatically increases to the following LR for that epoch~\cite{huang2017snapshot}. During 
-%each model 
-training, CAC changes the LR aggressively but systematically over epochs to produce different network weights~\cite{huang2017snapshot}: 
+Network weights were not initialized with any pretrained~(e.g., ImageNet contains photos of general objects, which would activate the internal representation of the network's hidden layers with geometrical forms, colorful patterns, or irrelevant shapes that are usually not present in CXR images) models. We set the number of epochs~(NE), maximum learning rate~(LR), number of cycles, and current epoch number, where initial LR and NE are two hyperparameters. CAC starts with a large LR and rapidly decreases to a minimum value before it dramatically increases~\cite{huang2017snapshot}, i.e., LR is changed aggressively but systematically over epochs to produce different network weights~\cite{huang2017snapshot}: 
 
 \vspace{-2mm}
 \begin{equation}
@@ -365,7 +369,7 @@ In this section, we discuss our evaluation results both quantitative and qualita
 During the snapshot model training\footnote{Source code: \url{https://github.com/rezacsedu/DeepCOVIDExplainer}}, we set the number of epochs to 200, maximum LR to 1.0, and the number of cycles to 20, giving 20 snapshots for each model. For 6 architectures, we get 120 snapshot models in total, on which we construct the ensemble model. The best snapshot model is used for the decision visualizations, which we choose using WeightWatcher~\cite{martin2019traditional}. 
 %To tackle the class imbalance issue, we apply class weighting to penalize a model when it misclassifies a positive sample. 
 %Although accuracy is an intuitive evaluation criterion for many bio-imaging problems, e.g., osteoarthritis severity prediction, those evaluation criteria are most suitable for balanced class scenarios. Keeping in mind the imbalanced scenario with widely different class distributions between classes,
-We report precision, recall, F1, and positive predictive value~(PPV) produced through random search and 5-fold cross-validation tests. %, i.e., for each hyperparameter group of the specific network structure, 5 repeated experiments are conducted.
+We report precision, recall, F1, and positive predictive value~(PPV). % produced through random search and 5-fold cross-validation tests. %, i.e., for each hyperparameter group of the specific network structure, 5 repeated experiments are conducted.
 
 \subsection{Datasets}
 \label{sec:ds}
@@ -582,15 +586,15 @@ Thirdly, taking the COVID-19 diagnosis context into account, the risk resulting 
 In this paper, we proposed \emph{`DeepCOVIDExplainer'} to leverage explainable COVID-19 prediction based on CXR images. Evaluation results show that our approach can identify COVID-19 with a PPV of 96.12\% and recall of 94.3\%, outperforming a recent approach. Further, as Curtis Langlotz\footnote{\url{https://www.nature.com/articles/d41586-019-03847-z}} stated ``AI won't replace radiologists, but radiologists who use AI will replace radiologists who don't''.  
 We would argue that \emph{`DeepCOVIDExplainer'} is not to replace radiologists, instead of being evaluated in a clinical setting, with no means a replacement for a human radiologist. 
 %In contrast, human judgment is indispensable when the life of patients is at stake. 
-Further, we hope our findings will be a useful contribution to the fight against COVID-19 and towards an increasing acceptance and adoption of AI-assisted applications in the clinical practice. 
+%Further, we hope our findings will be a useful contribution to the fight against COVID-19 and towards an increasing acceptance and adoption of AI-assisted applications in the clinical practice. 
 
-Lastly, we want to outline potential areas of improvements: 
-first, since only a limited amount of CXR images for COVID-19 infection cases were at hand, it would be unfair to claim that we can rule out overfitting for our models. More unseen data from similar distributions are necessary for trustworthy diagnoses. 
+%Lastly, we want to outline potential areas of improvements: first, 
+Since only a limited amount of CXR images for COVID-19 infection cases were at hand, it would be unfair to claim that we can rule out overfitting for our models. More unseen data from similar distributions are necessary for trustworthy diagnoses. 
 %to avoid possible out-of-distribution issues. 
 Secondly, due to external conditions, we were yet not been able to verify the diagnoses and localization accuracies with the radiologists. 
 Thirdly, accurate predictions not only depend on single imaging modalities but could also build upon additional modalities like CT and other decisive factors like patients' demographic and symptomatic assessment report~\cite{7}. 
 %Although, explaining predictions with plots and charts are useful for exploration and discovery, communicating them to patients may be tedious and require more human-interpretable decision rules in natural language. 
-In the future, we intend to overcome these limitations by alleviating more data and training a multimodal neural network and incorporating domain knowledge with symbolic reasoning for fairer diagnosis.
+%In the future, we intend to overcome these limitations by alleviating more data and training a multimodal neural network and incorporating domain knowledge with symbolic reasoning for fairer diagnosis.
 
 \bibliographystyle{IEEEtran}
 \bibliography{sample-base.bib}
