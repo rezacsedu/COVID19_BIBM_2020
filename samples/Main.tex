@@ -49,22 +49,20 @@
 \section{Introduction}
 \label{introduction}
 The ongoing coronavirus pandemic%~(declared by the World Health Organization~(WHO) in March 2020) 
-has already created a devastating impact on the health and well-being of the global population already~\cite{wang2020covid,gozes2020rapid}. As of November 6, 2020, it causes about 50 million infections of COVID-19 and 1.25 million fatalities\footnote{\url{https://www.worldometers.info/coronavirus/}}. 
+has already created a devastating impact on the health and well-being of the global population~\cite{wang2020covid,gozes2020rapid}. As of November 6, 2020, it causes about 50 million infections of COVID-19 and 1.25 million fatalities\footnote{\url{https://www.worldometers.info/coronavirus/}}. 
 Recent studies show that COVID-19, caused by severe acute respiratory syndrome coronavirus 2~(SARS-CoV-2), often, but by no means exclusively, affects elderly persons with pre-existing medical conditions~\cite{COVID1,COVID2,COVID3,huang2020clinical,ng2020imaging}.
 %\footnote{List of abbreviations can be found in the end of this paper.}. 
 While hospitals are struggling with scaling up capacities to meet the rising number of patients, it is crucial to make use of the screening methods at hand to identify COVID-19 cases and discriminate them from other conditions~\cite{wang2020covid}. 
-The definitive test for COVID-19 is the reverse transcriptase-polymerase chain reaction~(RT-PCR) test, which has to be performed in specialized laboratories and is a labor-intensive process. COVID-19 patients, however, show several unique clinical and para-clinical features, e.g., presenting abnormalities in medical chest imaging with commonly bilateral involvement. The features were shown to be observable on chest X-ray~(CXR) and CT images~\cite{huang2020clinical}, but are only moderately characteristic to the human eye~\cite{ng2020imaging} and not easy to distinguish from pneumonia features. 
+The definitive test for COVID-19 is the reverse transcriptase-polymerase chain reaction~(RT-PCR) test, which has to be performed in specialized laboratories and is a labor-intensive process. COVID-19 patients, however, show several unique clinical and para-clinical features, e.g., presenting abnormalities in medical chest imaging with commonly bilateral involvement. Such features that are observable on chest X-ray~(CXR) and CT scans~\cite{huang2020clinical} are only moderately characteristic to the human eye~\cite{ng2020imaging} and not easy to distinguish from pneumonia. 
 
 AI-based techniques have been utilized in numerous scenarios, including automated diagnoses and treatment in clinical settings. Deep neural networks~(DNNs) have been employed for the diagnosis of COVID-19 from medical images, leading to promising results~\cite{huang2020clinical,wang2020covid,ng2020imaging,ozturk2020automated,tabik2020covidgr}. However, many current approaches are ``black box" methods without providing insights into the decisive image features. 
 Let's imagine a situation where resources are scarce, e.g., a hospital runs out of confirmatory tests or necessary radiologists are occupied, where AI-assisted tools could potentially help less-specialized general practitioners to triage patients, by highlighting critical chest regions to lead automated diagnosis decision~\cite{wang2020covid}. 
 
 A fully automated method without the possibility for human verification would, however, at the current state-of-the-art, be potentially dangerous in a practical setting. 
-Although COVID-19 diagnosis approaches~\cite{bullock2020mapping,COVID3,COVID1,COVID2,narin2020automatic,wang2020covid, ozturk2020automated,ghoshal2020estimating,tabik2020covidgr} proposed recently looks promising when compared to expert radiologist a lower sensitivity in most of the cases, the reliability can be questioned for three main reasons. The datasets used are severely biased due to a deficient number of COVID-19 cases. Moreover, some results are not statistically reliable and lack of decision biases as the diagnoses were mostly based on a single model. Nevertheless, less accurate localization and visualization of critical chest regions.
-
+Although COVID-19 diagnosis approaches~\cite{bullock2020mapping,COVID3,COVID1,COVID2,narin2020automatic,wang2020covid, ozturk2020automated,karimdeepcovidexplainer,tabik2020covidgr} proposed recently looks promising when compared to expert radiologist a lower sensitivity in most of the cases, the reliability can be questioned for three main reasons. The datasets used are severely biased due to a deficient number of COVID-19 cases. Moreover, some results are not statistically reliable and lack of decision biases as the diagnoses were mostly based on a single model. Nevertheless, less accurate localization and visualization of critical chest regions.
 %We hope that \emph{`DeepCOVIDExplainer'} will be a useful contribution towards the development and adoption of AI-assisted diagnosis applications in general, and for COVID-19 in particular. 
 %To allow for the reproduction of results and derivative works, we will make the source code, documentation, and links to used data publicly available. 
 %The rest of the paper is structured as follows: \Cref{sec:rw} outlines related works and points out potential limitations. \Cref{sec:mm} describes our proposed approach, before demonstrating experiment results in \cref{sec:er}. \Cref{sec:co} summarizes the work and provides some outlook before concluding the paper.
-
 \iffalse
 \section{Related Work}
 \label{sec:rw}
@@ -88,11 +86,9 @@ an accuracy of 97.37\%$±$1.86\%,88.14\%$±$2.02\%, 66.5\%$±$8.04\% in severe, 
 
 Although these results look promising when compared to expert radiologist sensitivity of 69\%~\cite{tabik2020covidgr}, in most of the cases, the reliability can be questioned for three main reasons. The datasets used are severely biased due to a deficient number of COVID-19 cases~\cite{tabik2020covidgr}. Secondly, some results are not statistically reliable and lack of decision biases as the diagnoses were mostly based on a single model. Thirdly, less accurate localization and visualization of critical chest regions.
 \fi 
-
-To overcome these shortcomings and as a quick step towards an AI-based COVID-19 diagnosis, we propose \emph{`DeepCOVIDExplainer'}, a novel diagnosis approach based on neural ensemble method. 
+To overcome the shortcomings and as a quick step towards an AI-based COVID-19 diagnosis, we propose \emph{`DeepCOVIDExplainer'}, a novel diagnosis approach based on neural ensemble method. 
 %our approach first enriches existing datasets with more COVID-19 samples, followed by a comprehensive preprocessing pipeline for CXR images and data augmentation.
-The pipeline of DeepCOVIDExplainer starts with histogram equalization enhancement, filtering, and unsharp masking of CXR images, followed by the training of DenseNet, ResNet, and VGGNet architectures, and creating respective model snapshots. Those are incorporated into an ensemble, using Softmax class posterior averaging~(SCPA) and prediction maximization~(PM) for the best performing models. Finally, class-discriminating attention maps are generated using gradient-guided class activation maps~(Grad-CAM++) and layer-wise relevance propagation~(LRP) to provide explanations of the predictions and to identify the critical regions on patients chest.
-The COVID-19 diagnosis of \emph{`DeepCOVIDExplainer'}, which is based on snapshot neural ensemble method is focused on algorithmic transparency and explainability, with the following assumptions:
+Based on the following hypotheses, DeepCOVIDExplainer focuses on fairness, algorithmic transparency, and explainability:
 
 \vspace{1mm}
 \begin{itemize}
@@ -103,7 +99,7 @@ The COVID-19 diagnosis of \emph{`DeepCOVIDExplainer'}, which is based on snapsho
 
 \section{Methods}
 \label{sec:mm}
-In this section, we discuss our approach in detail, covering network construction and training and decision visualizations. 
+The pipeline of DeepCOVIDExplainer starts a comprehensive preprocessing of CXR images, followed by training of DenseNet, ResNet, and VGGNet architectures, and creating respective model snapshots. To incorporate the trained model into an ensemble, both Softmax class posterior averaging~(SCPA) and prediction maximization~(PM) are utilized. Finally, class-discriminating attention maps are generated using gradient-guided class activation maps~(Grad-CAM++) and layer-wise relevance propagation~(LRP) to provide explanations and to identify  critical regions on patients chest.
 
 \subsection{Preprocessing}
 Since radiographs almost always have dark edges~(e.g., left and right side of an image), images with such distinctly darker or brighter regions impact the  classification~\cite{86}). Therefore, we perform necessary preprocessing steps so that the model not only learns to identify black pixels in edges and to improve the generalization. In particular, we perform global contrast enhancement, edge enhancement, and noise elimination on entire CXR images by employing histogram equalization, Perona-Malik filter, and unsharp masking edge enhancement. %Since , we perform the  of CXR images using HGE. 
@@ -235,7 +231,7 @@ DenseNet-161, and DenseNet-201 architectures to concatenate additional inputs fr
 %To avoid possible overfitting, $L_2$ weight regularization, dropout, and data augmentation
 %~(by rotating CXR images by up to 15$^\circ$) 
 %were employed. 
-Network weights were not initialized with any pretrained~(e.g., ImageNet contains photos of general objects, which would activate the internal representation of the network's hidden layers with geometrical forms, colorful patterns, or irrelevant shapes that are usually not present in CXR images) models. We set the number of epochs~(NE), maximum learning rate~(LR), number of cycles, and current epoch number, where initial LR and NE are two hyperparameters. CAC starts with a large LR and rapidly decreases to a minimum value before it dramatically increases~\cite{huang2017snapshot}, i.e., LR is changed aggressively but systematically over epochs to produce different network weights~\cite{huang2017snapshot}: 
+Network weights were not initialized with any pretrained~(as general object like shapes are usually not present in CXR images~\cite{karimdeepcovidexplainer}) models. We set number of epochs~(NE), learning rate~(LR), number of cycles, and current epoch number. CAC starts with a large LR and rapidly decreases to a minimum value before it dramatically increases~\cite{huang2017snapshot}, i.e., LR is changed aggressively but systematically over epochs to produce different network weights~\cite{huang2017snapshot}: 
 
 \vspace{-2mm}
 \begin{equation}
@@ -366,7 +362,7 @@ In this section, we discuss our evaluation results both quantitative and qualita
 %Methods\footnote{\url{https://github.com/BioXAI/DeepCOVIDExplainer}} were written in Python with scikit-learn and Keras. % with the TensorFlow backend. 
 %The LRP-based visualization and relevance calculation are generated using the iNNvestigate toolbox\footnote{\url{https://github.com/albermax/innvestigate}}.
 %Networks were trained on an Nvidia Titan Xp GPU. % with CUDA. %, and cuDNN enabled to make the overall pipeline faster. 
-During the snapshot model training\footnote{Source code: \url{https://github.com/rezacsedu/DeepCOVIDExplainer}}, we set the number of epochs to 200, maximum LR to 1.0, and the number of cycles to 20, giving 20 snapshots for each model. For 6 architectures, we get 120 snapshot models in total, on which we construct the ensemble model. The best snapshot model is used for the decision visualizations, which we choose using WeightWatcher~\cite{martin2019traditional}. 
+During the snapshot model training\footnote{Source code: \url{https://github.com/rezacsedu/DeepCOVIDExplainer}}, we set the number of epochs to 200, maximum LR to 1.0, and the number of cycles to 20, giving 20 snapshots for each model. For 6 architectures, we get 120 snapshot models in total, on which we construct the ensemble model. The best snapshot model, which is used for the decision visualizations is chosen using WeightWatcher~\cite{martin2019traditional}. 
 %To tackle the class imbalance issue, we apply class weighting to penalize a model when it misclassifies a positive sample. 
 %Although accuracy is an intuitive evaluation criterion for many bio-imaging problems, e.g., osteoarthritis severity prediction, those evaluation criteria are most suitable for balanced class scenarios. Keeping in mind the imbalanced scenario with widely different class distributions between classes,
 We report precision, recall, F1, and positive predictive value~(PPV). % produced through random search and 5-fold cross-validation tests. %, i.e., for each hyperparameter group of the specific network structure, 5 repeated experiments are conducted.
@@ -453,13 +449,13 @@ Overall results are summarized in \cref{Table:all_models}: VGG-19 and DenseNet-1
 	%\vspace{-2mm} 
 \end{table*}
 
-Both DenseNets architectures show consistent performance owing to clearer image composition. DenseNet-161 outperforms not only DenseNet-201 but also all the other models. In particular, DenseNet-161 achieves precision, recall, and F1 scores of 0.952, 0.945, and 0.945, respectively, on balanced CXR images. VGG-19 also gives a comparable performance, giving precision, recall, and F1 scores of 0.943, 0.935, and 0.939, respectively. 
-On imbalanced image sets, both DenseNet-161 and ResNet-18 perform consistently. Although VGG-19 and ResNet-18 show competitive results on the balanced dataset, the misclassification rate for normal and pneumonia samples are slightly elevated than DenseNet-161, which poses a risk for clinical diagnosis. While DenseNet-161 is found to be resilient against class imbalanced, making it better suited for the clinical setting, where COVID-19 cases are rare compared to pneumonia or normal cases. %The ROC curve of DenseNet-161 model in \cref{fig:rocs} shows consistent AUC scores across folds, indicating not only stable predictions but also better prediction than random guessing. 
+Both DenseNets architectures show consistent performance owing to clearer image composition. DenseNet-161 outperforms not only DenseNet-201 but also all the other models. In particular, DenseNet-161 achieves precision, recall, and F1 scores of 0.952, 0.945, and 0.945, respectively, on balanced CXR images. VGG-19 also gives a comparable performance, giving precision, recall, and F1 scores of 0.943, 0.935, and 0.939, respectively. On imbalanced image sets, both DenseNet-161 and ResNet-18 perform consistently. Although VGG-19 and ResNet-18 show competitive results on the balanced dataset, the misclassification rate for normal and pneumonia samples are slightly elevated than DenseNet-161, which poses a risk for clinical diagnosis. 
 
-Nevertheless, lousy snapshot models can contaminate the overall predictive powers of the ensemble model. Hence, we use WeightWatcher to choose the best model. First, we choose top-5 snapshots to generate a full model and choose top-3 models for the final ensemble model. Finally, we compare top models
+While DenseNet-161 is found to be resilient against class imbalanced, making it better suited for the clinical setting, where COVID-19 cases are rare compared to pneumonia or normal cases. %The ROC curve of DenseNet-161 model in \cref{fig:rocs} shows consistent AUC scores across folds, indicating not only stable predictions but also better prediction than random guessing. 
+Nevertheless, lousy snapshot models can contaminate the overall predictive powers of the ensemble model. Hence, we use WeightWatcher to choose the best model. First, we choose top-5 snapshots to generate a full model and choose top-3 models for the final ensemble model. then, we compare top models
 %~(by excluding VGG-16, ResNet-34, and DenseNet-201) 
-and choose the ones with the lowest log norm and highest weighted alpha, where a low log-norm signifies better generalization of network weights~\cite{martin2019traditional}, %. \Cref{fig:weight_watch} shows choosing the better model between VGG-16 and VGG-19 with WeightWatcher 
-in terms of weighted alpha and log norm.
+and choose the ones with the lowest log norm and highest weighted alpha, where a low log-norm signifies better generalization of network weights~\cite{martin2019traditional}. %, %. \Cref{fig:weight_watch} shows choosing the better model between VGG-16 and VGG-19 with WeightWatcher 
+%in terms of weighted alpha and log norm.
 
 %\FloatBarrier
 \subsection{Model ensemble}
@@ -522,7 +518,7 @@ Results show that a majority of samples were classified correctly, with precisio
 \end{table*}
 
 \subsection{Quantitative analysis}
-Since we primarily want to limit the number of missed COVID-19 instances, a recall of 90.5\% is still an acceptable metric compared to 91\% by Wang et al.~\cite{wang2020covid}. It means that a certain fraction of all patients who test positive, will actually not have the disease. To determine how many of all infected persons would be diagnosed positively, we calculate the PPV. Out of our test set with 129 COVID-19 patient samples, only 3 were misclassified as pneumonia and two as normal, giving a PPV of 96.12\% for COVID-19 cases. This is still an acceptable metric compared to 98.9\% by Wang et al.~\cite{wang2020covid}. Besides, to provide a direct comparison, our approach slightly outperforms COVID-Net~\cite{wang2020covid} in terms of identifying normal and non-COVID19 cases. 
+Since we primarily want to limit the number of missed COVID-19 instances, a recall of 90.5\% is still an acceptable metric compared to 91\% by Wang et al.~\cite{wang2020covid}, i.e., a certain fraction of all patients who test positive, will actually not have the disease. To determine how many of all infected persons would be diagnosed positively, we calculate the PPV. Out of 129 COVID-19 patient samples, only 3 were misclassified as pneumonia and two as normal, giving a PPV of 96.12\% for COVID-19 cases. This is still an acceptable metric compared to 98.9\% by Wang et al.~\cite{wang2020covid}. Besides, to provide a direct comparison, our approach slightly outperforms COVID-Net~\cite{wang2020covid} w.r.t normal vs. non-COVID19 cases. 
 
 Further, to provide a one-to-one comparison with COVID-Net, we further apply similar techniques on the \emph{`COVIDx v1.0'} dataset. The evaluation result was carried out on a test set of 92 COVID-19 cases, only 3 were misclassified as pneumonia, resulting in a PPV of 96.74\% for COVID-19 cases. This is, however, slightly lower than that of COVID-Net. However, we would still argue that it is an acceptable metric compared to 98.9\% by Wang et al.~\cite{wang2020covid}. It is important to note that PPV was reported for a low prevalence of COVID-19 in the cohorts. In a setting with high COVID-19 prevalence, the likelihood of false-positives is expected to reduce in favor of correct COVID-19 predictions. In our case, results are backed up by i) a larger test set, ii) better localization and explanation capability, which contributes to the reliability of our evaluation results~(refer to \cref{sub:expl} for further details), given the fact that in healthcare predicting something with high confidence only is not enough, but requires trustworthiness. 
 
@@ -545,15 +541,15 @@ Further, to provide a one-to-one comparison with COVID-Net, we further apply sim
 
 \begin{figure*}
 	\centering
-    	\includegraphics[width=0.9\textwidth,height=30mm]{cam.png}
+    	\includegraphics[width=0.8\textwidth,height=30mm]{cam.png}
     	\caption{COVID-19 diagnosis from chest X-ray with ResNet-50, decision visualization with Grad-CAM, and explanation}
     	\label{Fig:ggcam_viz}
     	\smallskip
-    	\includegraphics[width=0.9\textwidth,height=30mm]{cam_plus.png}
+    	\includegraphics[width=0.8\textwidth,height=30mm]{cam_plus.png}
     	\caption{COVID-19 diagnosis from chest X-ray with ResNet-50, decision visualization with Grad-CAM++, and explanation}
     	\label{Fig:ggcam_plus_viz}
     	\smallskip
-    	\includegraphics[width=0.9\textwidth,height=30mm]{lrp.png}
+    	\includegraphics[width=0.8\textwidth,height=30mm]{lrp.png}
     	\caption{COVID-19 diagnosis from chest X-ray with ResNet-50, decision visualization with LRP, and explanation}
     	\label{Fig:lrp_viz}
     	\vspace{-2mm}
@@ -561,11 +557,13 @@ Further, to provide a one-to-one comparison with COVID-Net, we further apply sim
 
 \subsection{COVID-19 predictions and explanations}
 \label{sub:expl}
-Precise decisive feature localization is vital not only for the explanation but also for rapid confirmation of the reliability of outcomes, especially for potentially false-positive cases \cite{chattopadhay2018grad}. Attention map highlighting of critical regions on the chest advocate transparency and trustworthiness to clinicians and help them leverage their screening skills to make faster and yet more accurate diagnoses \cite{wang2020covid}. 
-In general, the more accurate a model is, the more consistent the visualizations of Grad-CAM and Grad-CAM++ will be. Key features can then easily be identified based on where the activation maps are overlapping. The critical regions of some CXR images of COVID-19 cases are demonstrated in \cref{Fig:ggcam_viz}, \cref{Fig:ggcam_plus_viz}, and \cref{Fig:lrp_viz}, where class-discriminating areas within the lungs are localized.
+%Precise decisive feature localization is vital not only for the explanation but also for rapid confirmation of the reliability of outcomes, especially for potentially false-positive cases \cite{chattopadhay2018grad}. Attention map highlighting of critical regions on the chest advocate transparency and trustworthiness to clinicians and help them leverage their screening skills to make faster and yet more accurate diagnoses \cite{wang2020covid}. 
+%In general, the more accurate a model is, the more consistent the visualizations of Grad-CAM and Grad-CAM++ will be. Key features can then easily be identified based on where the activation maps are overlapping. 
+
+The critical regions of some CXR images of COVID-19 cases are demonstrated in \cref{Fig:ggcam_viz}, \cref{Fig:ggcam_plus_viz}, and \cref{Fig:lrp_viz}, where class-discriminating areas within the lungs are localized.
 %\vspace{-2mm}
-As seen, HMs generated by Grad-CAM and Grad-CAM++ are fairly consistent and alike, but those with Grad-CAM++ are more accurately localized. The reason is that instead of certain parts, Grad-CAM++ highlights conjoined features more precisely.
-Although LRP highlights regions much more precisely, it fails to provide attention to critical regions. It turned out that Grad-CAM++ generates the most reliable HM's when compared to Grad-CAM and LRP. For more human-interpretable explanations, let's consider the following examples: 
+HM is generated by Grad-CAM and Grad-CAM++ are fairly consistent and alike, but those with Grad-CAM++ are more accurately localized. The reason is that instead of certain parts, Grad-CAM++ highlights conjoined features more precisely.
+Although LRP highlights regions much more precisely, it fails to provide attention to critical regions. It turned out that Grad-CAM++ generates the most reliable HM when compared to Grad-CAM and LRP. For more human-interpretable explanations, let's consider the following examples: 
 
 %\vspace{-2mm}
 \begin{itemize}
@@ -591,7 +589,7 @@ We would argue that \emph{`DeepCOVIDExplainer'} is not to replace radiologists, 
 %Lastly, we want to outline potential areas of improvements: first, 
 Since only a limited amount of CXR images for COVID-19 infection cases were at hand, it would be unfair to claim that we can rule out overfitting for our models. More unseen data from similar distributions are necessary for trustworthy diagnoses. 
 %to avoid possible out-of-distribution issues. 
-Secondly, due to external conditions, we were yet not been able to verify the diagnoses and localization accuracies with the radiologists. 
+Secondly, we were yet not been able to verify the diagnoses and localization accuracies with the radiologists. 
 Thirdly, accurate predictions not only depend on single imaging modalities but could also build upon additional modalities like CT and other decisive factors like patients' demographic and symptomatic assessment report~\cite{7}. 
 %Although, explaining predictions with plots and charts are useful for exploration and discovery, communicating them to patients may be tedious and require more human-interpretable decision rules in natural language. 
 %In the future, we intend to overcome these limitations by alleviating more data and training a multimodal neural network and incorporating domain knowledge with symbolic reasoning for fairer diagnosis.
