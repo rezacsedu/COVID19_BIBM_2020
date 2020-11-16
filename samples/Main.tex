@@ -102,7 +102,7 @@ Based on the following hypotheses, DeepCOVIDExplainer focuses on fairness, algor
 
 \section{Methods}
 \label{sec:mm}
-The pipeline of DeepCOVIDExplainer starts a comprehensive preprocessing of CXR images, followed by training of DenseNet, ResNet, and VGGNet architectures, and creating respective model snapshots. To incorporate the trained model into an ensemble, both Softmax class posterior averaging~(SCPA) and prediction maximization~(PM) are utilized. Finally, class-discriminating attention maps are generated using Grad-CAM++ and LRP to provide explanations and to identify critical regions on patients chest.
+The pipeline of DeepCOVIDExplainer starts with a comprehensive preprocessing of CXR images, followed by training of DenseNet, ResNet, and VGGNet architectures, and creating respective model snapshots. To incorporate the trained model into an ensemble, both Softmax class posterior averaging~(SCPA) and prediction maximization~(PM) are utilized. Finally, class-discriminating attention maps are generated using Grad-CAM++ and LRP to provide explanations and to identify critical regions on patients chest.
 
 \subsection{Preprocessing}
 Since radiographs usually have dark edges, images with such distinctly darker regions impact the  classification~\cite{86}). 
@@ -210,7 +210,7 @@ Further, CXR images are resized $224 \times 224 \times 3$ before starting the tr
 
 \begin{figure*}[h]
 	\centering
-	\includegraphics[width=0.8\textwidth,height=45mm]{wf.png}
+	\includegraphics[width=0.8\textwidth,height=48mm]{wf.png}
     \caption{Classification and decision visualization with CNN-based approach}	
 	\label{fig:viz}
 	\vspace{-2mm}
@@ -248,8 +248,8 @@ We do not initialize network weights with pretrained~(as general object like sha
 \vspace{-2mm}
 \begin{equation}
     \label{eq:lr-cosine}
-    \scriptsize{
-    \alpha(t)=\frac{\alpha_{0}}{2}\left(\cos \left(\frac{\pi \bmod (t-1,\lceil T / C\rceil)}{\lceil T / C\rceil}\right)+1\right),}
+    %\scriptsize{
+    \alpha(t)=\frac{\alpha_{0}}{2}\left(\cos \left(\frac{\pi \bmod (t-1,\lceil T / C\rceil)}{\lceil T / C\rceil}\right)+1\right),%}
 \end{equation}
 
 where $\alpha(t)$ is the LR at epoch $t$, $\alpha_0$ is the maximum LR, $T$ is the total epoch, $C$ is the number of cycles and $mod$ is the modulo operation. After training a network for $C$ cycles, best weights at the bottom of each cycle are saved as a model snapshot~($m$), giving $M$ model snapshots, where $m \leq M$. 
@@ -261,8 +261,8 @@ We apply both SCPA and PM of best-performing snapshot models, ensemble their pre
 
 \vspace{-2mm}
 \begin{equation}
-\scriptsize{
-    P(y=j | \mathbf{x})=\frac{\exp \left[\sum_{m=1}^{M} \hat{P}_{m}(y=j | \mathbf{x})\right]}{\exp \left[\sum_{k=1}^{K} \sum_{m=1}^{M} \hat{P}_{m}(y=k | \mathbf{x})\right]},}
+%\scriptsize{
+    P(y=j | \mathbf{x})=\frac{\exp \left[\sum_{m=1}^{M} \hat{P}_{m}(y=j | \mathbf{x})\right]}{\exp \left[\sum_{k=1}^{K} \sum_{m=1}^{M} \hat{P}_{m}(y=k | \mathbf{x})\right]},%}
 \end{equation}
 
 where $m$ is the last snapshot model from $M$, $K$ is the number classes, and $\hat{P}_{m}(y=j | \mathbf{x})$ is the probability distribution. 
@@ -517,20 +517,20 @@ In a setting with high COVID-19 prevalence, the likelihood of false-positives is
 		COVID-19 & 0.904 & 0.905 & 0.905 && 0.877 & 0.881 & 0.879\\
 		\hline
 	\end{tabular}
-	\vspace{-2mm}
+	\vspace{-4mm}
 \end{table*}
 
 \begin{figure*}
 	\centering
-    	\includegraphics[width=0.7\textwidth,height=30mm]{samples/gradcam_1.png}
+    	\includegraphics[width=0.75\textwidth,height=32mm]{samples/gradcam_1.png}
     	\caption{Classification of CXR with DenseNet-161, decision visualization with Grad-CAM, \& human-interpretable explanation}
     	\label{Fig:ggcam_viz}
     	\smallskip
-    	\includegraphics[width=0.7\textwidth,height=30mm]{samples/gradcam++_1.png}
+    	\includegraphics[width=0.75\textwidth,height=32mm]{samples/gradcam++_1.png}
     	\caption{Classification of CXR with DenseNet-161, decision visualization with Grad-CAM++, \& human-interpretable explanation}
     	\label{Fig:ggcam_plus_viz}
     	\smallskip
-    	\includegraphics[width=0.7\textwidth,height=30mm]{samples/lrp1.png}
+    	\includegraphics[width=0.75\textwidth,height=32mm]{samples/lrp1.png}
     	\caption{Classification of CXR with DenseNet-161, decision visualization with LRP, and human-interpretable explanation}
     	\label{Fig:lrp_viz}
     	\vspace{-2mm}
@@ -563,7 +563,7 @@ Thirdly, the risk resulting from a pneumonia diagnosis is much lower than for a 
 \section{Conclusion and Outlook}
 \label{sec:co}
 In this paper, we proposed \emph{`DeepCOVIDExplainer'} to leverage explainable COVID-19 prediction based on CXR images. Evaluation results show that our approach can identify COVID-19 with a PPV of 96.12\% and recall of 94.3\%, outperforming a recent approach. 
-However, since as Curtis Langlotz\footnote{\url{https://www.nature.com/articles/d41586-019-03847-z}} stated ``AI won't replace radiologists, but radiologists who use AI will replace radiologists who don't''. 
+%However, since as Curtis Langlotz\footnote{\url{https://www.nature.com/articles/d41586-019-03847-z}} stated ``AI won't replace radiologists, but radiologists who use AI will replace radiologists who don't''. 
 We would argue \emph{`DeepCOVIDExplainer'} 
 %to be evaluated in a clinical setting, 
 with no means a replacement for a human radiologist. 
