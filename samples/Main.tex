@@ -18,6 +18,9 @@
 \def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
     T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
     
+\IEEEoverridecommandlockouts
+\IEEEpubid{\makebox[\columnwidth]{978-1-7281-6215-7/20/\$31.00~\copyright{}2020 IEEE \hfill} \hspace{\columnsep}\makebox[\columnwidth]{ }}
+    
 \begin{document} % 
 
 \title{DeepCOVIDExplainer: Explainable COVID-19 Diagnosis from Chest X-ray Images}
@@ -42,7 +45,7 @@
 \begin{abstract}
     %Amid the coronavirus disease~(COVID-19) pandemic, challenge hospitals are faced with, in the fight against the virus, is the effective screening of incoming patients.
     %One methodology is the assessment of  images, which usually requires expert radiologists' knowledge. 
-    In this paper\footnote{Read longer version of this paper:~\url{https://arxiv.org/pdf/2004.04582.pdf}}, we propose an explainable deep neural networks~(DNN)-based method for automatic detection of COVID-19 symptoms from chest radiography~(CXR) images, which we call \emph{`DeepCOVIDExplainer'}. We used 15,959 CXR images of 15,854 patients, covering normal, pneumonia, and COVID-19 cases. CXR images are first comprehensively preprocessed and augmented before classifying with a neural ensemble method, followed by highlighting class-discriminating regions using gradient-guided class activation maps~(Grad-CAM++) and layer-wise relevance propagation~(LRP). Further, we provide human-interpretable explanations for the diagnosis. Evaluation results show that our approach can identify COVID-19 cases 
+    In this paper\footnote{Read longer version of this paper:~\url{https://arxiv.org/pdf/2004.04582.pdf}}, we proposed an explainable deep neural networks~(DNN)-based method for automatic detection of COVID-19 symptoms from chest radiography~(CXR) images, which we call \emph{`DeepCOVIDExplainer'}. We used 15,959 CXR images of 15,854 patients, covering normal, pneumonia, and COVID-19 cases. CXR images are first comprehensively preprocessed and augmented before classifying with a neural ensemble method, followed by highlighting class-discriminating regions using gradient-guided class activation maps~(Grad-CAM++) and layer-wise relevance propagation~(LRP). Further, we provide human-interpretable explanations for the diagnosis. Evaluation results show that our approach can identify COVID-19 cases 
     %\footnote{Findings are not externally~(e.g., with radiologists/clinicians) validated yet.} 
     with a positive predictive value~(PPV) of 91.6\%, 92.45\%, and 96.12\%, respectively for normal, pneumonia, and COVID-19 cases, respectively, 
     %(and precision, recall, and F1 score of 94.6\%, 94.3\%, and 94.6\%, respectively)
@@ -210,7 +213,7 @@ Further, CXR images are resized $224 \times 224 \times 3$ before starting the tr
 
 \begin{figure*}[h]
 	\centering
-	\includegraphics[width=0.8\textwidth,height=48mm]{wf.png}
+	\includegraphics[width=0.75\textwidth,height=46mm]{wf.png}
     \caption{Classification and decision visualization with CNN-based approach}	
 	\label{fig:viz}
 	\vspace{-2mm}
@@ -248,8 +251,8 @@ We do not initialize network weights with pretrained~(as general object like sha
 \vspace{-2mm}
 \begin{equation}
     \label{eq:lr-cosine}
-    %\scriptsize{
-    \alpha(t)=\frac{\alpha_{0}}{2}\left(\cos \left(\frac{\pi \bmod (t-1,\lceil T / C\rceil)}{\lceil T / C\rceil}\right)+1\right),%}
+    \scriptsize{
+    \alpha(t)=\frac{\alpha_{0}}{2}\left(\cos \left(\frac{\pi \bmod (t-1,\lceil T / C\rceil)}{\lceil T / C\rceil}\right)+1\right),}
 \end{equation}
 
 where $\alpha(t)$ is the LR at epoch $t$, $\alpha_0$ is the maximum LR, $T$ is the total epoch, $C$ is the number of cycles and $mod$ is the modulo operation. After training a network for $C$ cycles, best weights at the bottom of each cycle are saved as a model snapshot~($m$), giving $M$ model snapshots, where $m \leq M$. 
@@ -261,8 +264,8 @@ We apply both SCPA and PM of best-performing snapshot models, ensemble their pre
 
 \vspace{-2mm}
 \begin{equation}
-%\scriptsize{
-    P(y=j | \mathbf{x})=\frac{\exp \left[\sum_{m=1}^{M} \hat{P}_{m}(y=j | \mathbf{x})\right]}{\exp \left[\sum_{k=1}^{K} \sum_{m=1}^{M} \hat{P}_{m}(y=k | \mathbf{x})\right]},%}
+\scriptsize{
+    P(y=j | \mathbf{x})=\frac{\exp \left[\sum_{m=1}^{M} \hat{P}_{m}(y=j | \mathbf{x})\right]}{\exp \left[\sum_{k=1}^{K} \sum_{m=1}^{M} \hat{P}_{m}(y=k | \mathbf{x})\right]},}
 \end{equation}
 
 where $m$ is the last snapshot model from $M$, $K$ is the number classes, and $\hat{P}_{m}(y=j | \mathbf{x})$ is the probability distribution. 
@@ -521,16 +524,17 @@ In a setting with high COVID-19 prevalence, the likelihood of false-positives is
 \end{table*}
 
 \begin{figure*}
+    	\vspace{-2mm}
 	\centering
-    	\includegraphics[width=0.7\textwidth,height=33mm]{samples/gcam.pdf}
+    	\includegraphics[width=0.7\textwidth,height=33.75mm]{samples/gcam.pdf}
     	\caption{Classification of CXR with DenseNet-161, decision visualization~(Grad-CAM), and human-interpretable explanation}
     	\label{Fig:ggcam_viz}
     	\smallskip
-    	\includegraphics[width=0.7\textwidth,height=33mm]{samples/gcampp.pdf}
+    	\includegraphics[width=0.7\textwidth,height=33.75mm]{samples/gcampp.pdf}
     	\caption{Classification of CXR with DenseNet-161, decision visualization~(Grad-CAM++), and human-interpretable explanation}
     	\label{Fig:ggcam_plus_viz}
     	\smallskip
-    	\includegraphics[width=0.7\textwidth,height=33mm]{samples/lrp.pdf}
+    	\includegraphics[width=0.7\textwidth,height=33.75mm]{samples/lrp.pdf}
     	\caption{Classification of CXR with DenseNet-161, decision visualization~(LRP), and human-interpretable explanation}
     	\label{Fig:lrp_viz}
     	\vspace{-4mm}
