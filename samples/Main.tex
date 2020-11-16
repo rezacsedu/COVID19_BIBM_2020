@@ -105,9 +105,9 @@ Based on the following hypotheses, DeepCOVIDExplainer focuses on fairness, algor
 The pipeline of DeepCOVIDExplainer starts with a comprehensive preprocessing of CXR images, followed by training of DenseNet, ResNet, and VGGNet architectures, and creating respective model snapshots. To incorporate the trained model into an ensemble, both Softmax class posterior averaging~(SCPA) and prediction maximization~(PM) are utilized. Finally, class-discriminating attention maps are generated using Grad-CAM++ and LRP to provide explanations and to identify critical regions on patients chest.
 
 \subsection{Preprocessing}
-Since radiographs usually have dark edges, images with such distinctly darker regions impact the  classification~\cite{86}). 
+Since radiographs usually have dark edges, images with such distinctly darker regions impact the  classification. 
 %We perform necessary preprocessing steps so that the model not only learns to identify black pixels in edges and to improve the generalization. 
-We perform global contrast enhancement, edge enhancement, and noise elimination on entire CXR images with histogram equalization and unsharp masking edge enhancement. %Since , we perform the  of CXR images using HGE. 
+We perform global contrast enhancement, edge enhancement, and noise elimination on entire CXR images with histogram equalization and unsharp masking edge enhancement~\cite{86}. %Since , we perform the  of CXR images using HGE. 
 
 \iffalse
 By merging gray-levels with low frequencies into one, stretching high frequent intensities over high range of gray levels, HGE achieves close to equally distributed intensities~\cite{90}, where the probability density function $p(X_{k})$ of an image $X$ is defined as~\cite{90}:
@@ -377,7 +377,7 @@ During the training\footnote{Source code: \url{https://github.com/rezacsedu/Deep
 %giving 219 COVID-19 positive images, 1,341 normal images, and 1,345 viral pneuomonia images. This gives 358 CXR images from 266 COVID-19 patient cases and total of 8,066 patient cases who have no pneumonia~(i.e., normal) and 5,538 patient cases who have non-COVID19 pneumonia. 
 %had a total of 5,941 CXR images from 2,839 patients based on the COVID-19 image dataset curated by Joseph P., et al.~\cite{cohen2020covid} and Kaggle CXR Pneumonia dataset\footnote{\url{https://www.kaggle.com/paultimothymooney/chest-xray-pneumonia}} by Paul Mooney. It is used in some early works, e.g.,~\cite{wang2020covid}. However, Kaggle CXR images are of children. 
 %Therefore, to avoid possible prediction bias~(e.g., the model might be prone to predict based on mere chest size), 
-The updated dataset~\footnote{Refer to \url{https://github.com/rezacsedu/DeepCOVIDExplainer} for the detail.}, which we refer to \emph{`COVIDx v2.0'} is categorized as normal~(i.e., no-findings), pneumonia, and COVID-19 viral are enriched with CXR images of adult subjects of COVID-19, pneumonia, and normal examples, leaving 15,959 CXR images across 15,854 patients: 
+We used 15,959 CXR images\footnote{Refer to \url{https://github.com/rezacsedu/DeepCOVIDExplainer} for the detail.} that are categorized into normal~(8,066 images), pneumonia~(5,538 images), and COVID-19 cases~(i.e., 358 CXR images) covering 15,854 patients. %This gives cases and total of 8,066 patient cases who have no pneumonia (i.e.,normal) and 5,538 patient cases who have non-COVID19 pneu-monia 
 
 \iffalse
 \vspace{1mm}
@@ -468,7 +468,7 @@ While DenseNet-161 is found to be resilient against class imbalanced, making it 
 \label{model_ensemble}
 We perform the ensemble on following top-3 models: VGG-19, ResNet-18, and DenseNet-161. %To ensure a variation of network architectures within the ensemble, VGG-19 is also included. 
 As demonstrated in \cref{Table:ensemble_result}, the ensemble based on the SCPA method moderately outperforms the ensemble based on the PM method. The reason is that the PM approach appears to be easily influenced by outliers with high scores. %To a great extent, the mean probabilities for each class affect the direction of outliers. 
-For the SCPA-based ensemble, the combination of VGG-19 + DenseNet-161 outperforms other ensemble combinations. Results show that a majority of samples were classified correctly, with precision, recall, and F1 scores of 0.937, 0.926, and 0.931, respectively, using the PM ensemble method.
+For the SCPA-based ensemble, the combination of VGG-19  and DenseNet-161 outperforms other ensemble combinations. Results show that a majority of samples were classified correctly, with precision, recall, and F1 scores of 0.937, 0.926, and 0.931, respectively, using the PM ensemble method.
 %The confusion matrix of the best ensemble's performance on balanced data is shown in \cref{fig:conf}. 
 The SCPA-based ensemble yields slightly higher precision, recall, and F1 of 0.946, 0.943, and 0.945, respectively. We report the class-specific measures in \cref{Table:class_specific_result}. % to provide a better view in both balanced and imbalanced scenarios.
 
@@ -522,18 +522,18 @@ In a setting with high COVID-19 prevalence, the likelihood of false-positives is
 
 \begin{figure*}
 	\centering
-    	\includegraphics[width=0.75\textwidth,height=32mm]{samples/gradcam_1.png}
-    	\caption{Classification of CXR with DenseNet-161, decision visualization with Grad-CAM, \& human-interpretable explanation}
+    	\includegraphics[width=0.7\textwidth,height=33mm]{samples/gcam.pdf}
+    	\caption{Classification of CXR with DenseNet-161, decision visualization~(Grad-CAM), and human-interpretable explanation}
     	\label{Fig:ggcam_viz}
     	\smallskip
-    	\includegraphics[width=0.75\textwidth,height=32mm]{samples/gradcam++_1.png}
-    	\caption{Classification of CXR with DenseNet-161, decision visualization with Grad-CAM++, \& human-interpretable explanation}
+    	\includegraphics[width=0.7\textwidth,height=33mm]{samples/gcampp.pdf}
+    	\caption{Classification of CXR with DenseNet-161, decision visualization~(Grad-CAM++), and human-interpretable explanation}
     	\label{Fig:ggcam_plus_viz}
     	\smallskip
-    	\includegraphics[width=0.75\textwidth,height=32mm]{samples/lrp1.png}
-    	\caption{Classification of CXR with DenseNet-161, decision visualization with LRP, and human-interpretable explanation}
+    	\includegraphics[width=0.7\textwidth,height=33mm]{samples/lrp.pdf}
+    	\caption{Classification of CXR with DenseNet-161, decision visualization~(LRP), and human-interpretable explanation}
     	\label{Fig:lrp_viz}
-    	\vspace{-2mm}
+    	\vspace{-4mm}
 \end{figure*}
 
 \subsection{COVID-19 predictions and explanations}
@@ -573,10 +573,10 @@ with no means a replacement for a human radiologist.
 On a serious note: due to limited number of CXR images used to train the models, it would be unfair to claim that we can rule out overfitting for our models. 
 %More unseen data from similar distributions are necessary for trustworthy diagnoses. 
 %to avoid possible out-of-distribution issues. 
-Besides, we were yet not been able to verify the diagnoses and localization accuracies with the radiologists. 
+Besides, we were yet not been able to verify the diagnosis and localization accuracies with  radiologists. 
 %Thirdly, accurate predictions not only depend on single imaging modalities but could also build upon additional modalities like CT and other decisive factors like patients' demographic and symptomatic assessment report. %~\cite{7}. 
 %Although, explaining predictions with plots and charts are useful for exploration and discovery, communicating them to patients may be tedious and require more human-interpretable decision rules in natural language. 
-In the future, we intend to overcome these limitations with a multimodal learning~(CT scans, CXR, and clinical notes) outcomes.
+In future, we intend to overcome these limitations with a multimodal learning~(i.e., based on CT scans, CXR, and clinical notes) outcomes.
 
 \bibliographystyle{IEEEtran}
 \bibliography{sample-base.bib}
